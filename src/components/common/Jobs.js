@@ -5,25 +5,25 @@ class Jobs extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedLand: '',
-      selectedProduct: '',
+      selectedLand: undefined,
+      selectedProduct: undefined,
     };
     this.selectedLand = this.selectedLand.bind(this);
     this.selectedProduct = this.selectedProduct.bind(this);
   }
 
-  selectedLand(value) {
-    this.setState({
+  async selectedLand(value) {
+    await this.setState({
       selectedLand: value,
     });
-    console.log('Selected:' + this.state.selectedLand);
+    console.log('Selected Land:' + this.state.selectedLand);
   }
 
-  selectedProduct(value) {
-    this.setState({
+  async selectedProduct(value) {
+    await this.setState({
       selectedProduct: value,
     });
-    console.log('Selected:' + this.state.selectedProduct);
+    console.log('Selected Product:' + this.state.selectedProduct);
   }
 
   render() {
