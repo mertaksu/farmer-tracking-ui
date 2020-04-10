@@ -1,0 +1,39 @@
+{
+  "name": "farmertracking-ui",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "android": "react-native run-android",
+    "ios": "react-native run-ios",
+    "start": "react-native start",
+    "test": "jest",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@ant-design/react-native": "^3.2.2",
+    "@react-native-community/masked-view": "^0.1.6",
+    "@react-navigation/native": "^5.0.0",
+    "@react-navigation/stack": "^5.0.0",
+    "native-base": "^2.13.12",
+    "react": "16.11.0",
+    "react-native": "0.62.2",
+    "react-native-gesture-handler": "^1.5.6",
+    "react-native-reanimated": "^1.7.0",
+    "react-native-router-flux": "^4.2.0",
+    "react-native-safe-area-context": "^0.7.2",
+    "react-native-screens": "^2.0.0-beta.2"
+  },
+  "devDependencies": {
+    "@babel/core": "7.8.3",
+    "@babel/runtime": "7.8.3",
+    "@react-native-community/eslint-config": "0.0.5",
+    "babel-jest": "24.9.0",
+    "eslint": "6.8.0",
+    "jest": "24.9.0",
+    "metro-react-native-babel-preset": "0.56.4",
+    "react-test-renderer": "16.9.0"
+  },
+  "jest": {
+    "preset": "react-native"
+  }
+}
