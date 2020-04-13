@@ -12,10 +12,13 @@ import {
   Tabs,
   Title,
 } from 'native-base';
+
 import {Land} from '../components/common/Land';
 import {Products} from '../components/common/Products';
 import {Jobs} from '../components/common/Jobs';
 import {service} from '../services/service';
+import {StyleSheet} from 'react-native';
+
 class MainPage extends Component {
   constructor(props) {
     super(props);
@@ -95,9 +98,9 @@ class MainPage extends Component {
 
   render() {
     return (
-      <Container>
+      <Container style={styles.container}>
         <Content>
-          <Header hasSegment>
+          <Header hasSegment style={{backgroundColor: '#455a64'}}>
             <Left>
               <Button transparent>
                 <Icon name="menu" />
@@ -113,21 +116,36 @@ class MainPage extends Component {
             </Right>
           </Header>
           <Tabs>
-            <Tab heading="Araziler">
-              <Land
-                lands={this.state.lands}
-                addLand={this.addLand}
-                deleteLand={this.deleteLand}
-              />
-            </Tab>
-            <Tab heading="Ürünler">
+            <Tab
+              heading="Ürünler"
+              tabStyle={{backgroundColor: '#455a64'}}
+              textStyle={{color: 'black'}}
+              activeTabStyle={{backgroundColor: '#455a64'}}
+              activeTextStyle={{color: 'black', fontWeight: 'bold'}}>
               <Products
                 products={this.state.products}
                 addProduct={this.addProduct}
                 deleteProduct={this.deleteProduct}
               />
             </Tab>
-            <Tab heading="İşler">
+            <Tab
+              heading="Araziler"
+              tabStyle={{backgroundColor: '#455a64'}}
+              textStyle={{color: 'black'}}
+              activeTabStyle={{backgroundColor: '#455a64'}}
+              activeTextStyle={{color: 'black', fontWeight: 'bold'}}>
+              <Land
+                lands={this.state.lands}
+                addLand={this.addLand}
+                deleteLand={this.deleteLand}
+              />
+            </Tab>
+            <Tab
+              heading="Planlı İşler"
+              tabStyle={{backgroundColor: '#455a64'}}
+              textStyle={{color: 'black'}}
+              activeTabStyle={{backgroundColor: '#455a64'}}
+              activeTextStyle={{color: 'black', fontWeight: 'bold'}}>
               <Jobs products={this.state.products} lands={this.state.lands} />
             </Tab>
           </Tabs>
@@ -137,3 +155,10 @@ class MainPage extends Component {
   }
 }
 export {MainPage};
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: '#455a64',
+    flex: 1,
+  },
+});

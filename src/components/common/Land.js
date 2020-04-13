@@ -1,7 +1,12 @@
 import React, {Component} from 'react';
-import {Text} from 'native-base';
+import {Item, Text} from 'native-base';
 import {service} from '../../services/service';
 import {Body, Right, Content, Button, List, ListItem, Input} from 'native-base';
+import {SafeAreaView, YellowBox} from 'react-native';
+
+YellowBox.ignoreWarnings([
+  'VirtualizedLists should never be nested', // TODO: Remove when fixed
+]);
 
 class Land extends Component {
   constructor(props) {
@@ -36,30 +41,44 @@ class Land extends Component {
 
   render() {
     return (
-      <Content padder>
-        <List
-          dataArray={this.props.lands}
-          renderRow={item => (
-            <ListItem>
-              <Body>
-                <Text>{item.landName}</Text>
-              </Body>
-              <Right>
-                <Button transparent onPress={() => this.deleteLand(item.id)}>
-                  <Text>Delete</Text>
-                </Button>
-              </Right>
-            </ListItem>
-          )}
-          keyExtractor={(item, index) => index.toString()}
-        />
-        <Text>{'\n'}</Text>
-        <Input
-          placeholder="Arazi Adı"
-          value={this.state.landName}
-          onChangeText={value => this.setState({landName: value})}
-        />
-        <Button primary onPress={() => this.addLand(this.state.landName)}>
+      <Content
+        padder
+        style={{backgroundColor: '#455a64'}}
+        scrollEnabled={false}>
+        <SafeAreaView style={{margin: 10, flex: 1}}>
+          <List
+            dataArray={this.props.lands}
+            renderRow={item => (
+              <ListItem
+                noIndent
+                style={{borderWidth: 0, backgroundColor: '#455a64'}}>
+                <Body>
+                  <Text style={{color: '#fff'}}>{item.landName}</Text>
+                </Body>
+                <Right>
+                  <Button transparent onPress={() => this.deleteLand(item.id)}>
+                    <Text style={{color: '#007aff', fontWeight: 'bold'}}>
+                      Sil
+                    </Text>
+                  </Button>
+                </Right>
+              </ListItem>
+            )}
+            keyExtractor={(item, index) => index.toString()}
+          />
+        </SafeAreaView>
+        <Item rounded style={{margin: 10}}>
+          <Input
+            placeholderTextColor={'gray'}
+            placeholder="Arazi Adı"
+            value={this.state.landName}
+            onChangeText={value => this.setState({landName: value})}
+          />
+        </Item>
+        <Button
+          block
+          style={{margin: 10}}
+          onPress={() => this.addLand(this.state.landName)}>
           <Text>Ekle</Text>
         </Button>
       </Content>
