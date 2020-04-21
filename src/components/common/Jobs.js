@@ -34,23 +34,6 @@ const maxDate = moment()
   .add(365, 'days')
   .format(format);
 
-const DATA = [
-  {
-    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-    arazi: 'Cakırca',
-    ilac: 'İlaçlama',
-    urun: 'Erik',
-    tarih: '26.09.2020',
-  },
-  {
-    id: 'bd7acbeb-c1b1-46c2-aed5-3ad53abb28ba',
-    arazi: 'Boyalıca',
-    ilac: 'Sulama',
-    urun: 'Şeftali',
-    tarih: '31.12.2020',
-  },
-];
-
 LocaleConfig.locales.tr = {
   monthNames: [
     'Ocak',
@@ -80,9 +63,9 @@ LocaleConfig.locales.tr = {
 LocaleConfig.defaultLocale = 'tr';
 
 const radioItems = [
-  {label: 'Gübreleme  ', value: 0},
-  {label: 'İlaçlama  ', value: 1},
-  {label: 'Sulama  ', value: 2},
+  {label: 'Gübreleme  ', value: "Gübreleme"},
+  {label: 'İlaçlama  ', value: "İlaçlama"},
+  {label: 'Sulama  ', value: "Sulama"},
 ];
 
 class Jobs extends Component {
@@ -96,10 +79,11 @@ class Jobs extends Component {
       gubreRadio: false,
       ilacRadio: false,
       sulamaRadio: false,
-      selectedRadio: 0,
+      selectedRadio: 'Gübreleme',
       collapsed: false,
     };
     this.addPlan = this.addPlan.bind(this);
+    this.deletePlan = this.deletePlan.bind(this);
   }
 
   onDaySelect = day => {
@@ -117,7 +101,7 @@ class Jobs extends Component {
     this.setState({markedDates: updatedMarkedDates});
   };
 
-  addPlan() {
+  async addPlan() {
     const selectedDates = [];
     Object.entries(this.state.markedDates).map(([key, value]) => {
       if (value.selected) {
@@ -125,12 +109,21 @@ class Jobs extends Component {
       }
     });
     const requestBody = {
-      selectedProduct: this.state.selectedProduct,
-      selectedLand: this.state.selectedLand,
-      markedDates: selectedDates,
-      selectedRadio: this.state.selectedRadio,
+      cropId: this.state.selectedProduct,
+      landId: this.state.selectedLand,
+      planDate: selectedDates,
+      planType: this.state.selectedRadio,
     };
-    console.log('Add Plan:' + JSON.stringify(requestBody));
+    this.props.addPlan(requestBody);
+
+    this.setState({selectedProduct: undefined});
+    this.setState({selectedLand: undefined});
+    this.setState({markedDates: {}});
+    this.setState({collapsed: false});
+  }
+
+  async deletePlan(id) {
+    this.props.deletePlan(id);
   }
 
   render() {
@@ -142,6 +135,7 @@ class Jobs extends Component {
           scrollEnabled={false}>
           <Collapse
             style={{backgroundColor: '#455a64'}}
+            isCollapsed={this.state.collapsed}
             onToggle={isCollapsed => this.setState({collapsed: isCollapsed})}>
             <CollapseHeader>
               <View
@@ -169,6 +163,7 @@ class Jobs extends Component {
                     <RadioForm
                       formHorizontal={true}
                       radio_props={radioItems}
+                      labelColor={'#bfc6ea'}
                       initial={0}
                       onPress={value => {
                         this.setState({selectedRadio: value});
@@ -181,12 +176,13 @@ class Jobs extends Component {
                     headerBackButtonText={'Geri'}
                     iosIcon={<Icon name="arrow-down" />}
                     placeholder="Arazi Seç"
+                    textStyle={{color: '#bfc6ea'}}
                     placeholderStyle={{color: '#bfc6ea'}}
                     placeholderIconColor="#007aff"
                     style={{width: undefined}}
                     selectedValue={this.state.selectedLand}
                     onValueChange={item => this.setState({selectedLand: item})}>
-                    {this.props.lands.map(v => {
+                    {this.props.lands!=null && this.props.lands.map(v => {
                       return (
                         <Picker.Item
                           key={v.id}
@@ -202,6 +198,7 @@ class Jobs extends Component {
                     headerBackButtonText={'Geri'}
                     iosIcon={<Icon name="arrow-down" />}
                     placeholder="Ürün Seç"
+                    textStyle={{color: '#bfc6ea'}}
                     placeholderStyle={{color: '#bfc6ea'}}
                     placeholderIconColor="#007aff"
                     style={{width: undefined}}
@@ -252,9 +249,8 @@ class Jobs extends Component {
               </Content>
             </CollapseBody>
           </Collapse>
-          <SafeAreaView style={{backgroundColor: '#455a64', flex: 1}}>
             <List
-              dataArray={DATA}
+              dataArray={this.props.plans}
               renderRow={item => (
                 <View style={{backgroundColor: '#455a64'}}>
                   <Separator
@@ -269,7 +265,7 @@ class Jobs extends Component {
                       </Text>
                     </Left>
                     <Right>
-                      <Button transparent>
+                      <Button transparent onPress={() => this.deletePlan(item.farmerPlanId)}>
                         <Text style={{color: '#007aff', fontWeight: 'bold'}}>
                           Sil
                         </Text>
@@ -300,7 +296,7 @@ class Jobs extends Component {
                             }}>
                             Arazi:
                           </Text>
-                          <Text style={{color: '#fff'}}>{item.arazi}</Text>
+                          <Text style={{color: '#fff'}}>{item.landName}</Text>
                           <Text
                             style={{
                               width: '25%',
@@ -309,7 +305,7 @@ class Jobs extends Component {
                             }}>
                             Ekin:
                           </Text>
-                          <Text style={{color: '#fff'}}>{item.urun}</Text>
+                          <Text style={{color: '#fff'}}>{item.cropName}</Text>
                         </View>
                         <View
                           style={{
@@ -319,22 +315,22 @@ class Jobs extends Component {
                           }}>
                           <Text
                             style={{
-                              width: '33%',
+                              width: '25%',
                               fontWeight: 'bold',
                               color: '#fff',
                             }}>
                             İş:
                           </Text>
-                          <Text style={{color: '#fff'}}>{item.ilac}</Text>
+                          <Text style={{color: '#fff'}}>{item.planType}</Text>
                           <Text
                             style={{
-                              width: '32%',
+                              width: '25%',
                               fontWeight: 'bold',
                               color: '#fff',
                             }}>
                             Tarih:
                           </Text>
-                          <Text style={{color: '#fff'}}>{item.tarih}</Text>
+                          <Text style={{color: '#fff'}}>{item.planDate}</Text>
                         </View>
                       </View>
                     </Body>
@@ -343,7 +339,6 @@ class Jobs extends Component {
               )}
               keyExtractor={(item, index) => index.toString()}
             />
-          </SafeAreaView>
         </Content>
       </Fragment>
     );

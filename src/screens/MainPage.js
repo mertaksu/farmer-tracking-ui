@@ -25,19 +25,23 @@ class MainPage extends Component {
     this.state = {
       lands: [],
       products: [],
-      productName: '',
+      plans: [],
     };
     this.getProducts = this.getProducts.bind(this);
     this.getLand = this.getLand.bind(this);
+    this.getPlan = this.getPlan.bind(this);
     this.deleteProduct = this.deleteProduct.bind(this);
     this.addProduct = this.addProduct.bind(this);
     this.deleteLand = this.deleteLand.bind(this);
     this.addLand = this.addLand.bind(this);
+    this.deletePlan = this.deletePlan.bind(this);
+    this.addPlan = this.addPlan.bind(this);
   }
 
   componentDidMount() {
     this.getProducts();
     this.getLand();
+    this.getPlan();
   }
 
   async deleteProduct(id) {
@@ -46,18 +50,17 @@ class MainPage extends Component {
       console.log('Delete Product Response:' + response),
     );
     await this.getProducts();
+    await this.getPlan();
   }
 
   async addProduct(productName) {
     console.log('Add Product Called ProductName:' + productName);
     let request = {
       cropName: productName,
-      userId: '727',
     };
     await service('/crop', 'POST', request).then(response =>
       console.log('Add Product Response:' + JSON.stringify(response)),
-    );
-    this.setState({productName: ''});
+    ).catch(error => console.log(error));
     await this.getProducts();
   }
 
@@ -67,33 +70,57 @@ class MainPage extends Component {
       console.log('Delete Land Response:' + response),
     );
     await this.getLand();
+    await this.getPlan();
   }
 
-  async addLand(landName) {
-    console.log('Add Land Called');
+  async addLand(landName,lat,lon) {
+    console.log('Add Land Called LandName: '+landName+' Latitude: '+lat+' Longitude: '+lon);
     let request = {
       landName: landName,
-      userId: '727',
+      latitude: lat,
+      longitude: lon
     };
     await service('/land', 'POST', request).then(response =>
       console.log('Add Land Response:' + JSON.stringify(response)),
-    );
-    this.setState({landName: ''});
+    ).catch(error => console.log(error));
     await this.getLand();
+  }
+
+  async deletePlan(planId) {
+    console.log("Delete Plan Called");
+    await service('/plan/'+planId,'DELETE')
+        .then(response => console.log("Delete Plan Response"+response))
+        .catch(error => console.log(error));
+    await this.getPlan();
+  }
+
+  async addPlan(planRequest) {
+    console.log('Add Plan Called');
+    await service('/plan', 'POST',planRequest)
+        .then(response => console.log("Add Plan Response "+response))
+        .catch(error => console.log(error));
+    await this.getPlan();
   }
 
   getProducts() {
     console.log('Get Product Called');
-    service('/crop/727', 'GET')
+    service('/crop', 'GET')
       .then(response => this.setState({products: response}))
       .catch(error => console.log(error));
   }
 
   getLand() {
     console.log('Get Land Called');
-    service('/land/727', 'GET')
+    service('/land', 'GET')
       .then(response => this.setState({lands: response}))
       .catch(error => console.log(error));
+  }
+
+  getPlan() {
+    console.log('Get Plans Called');
+    service('/plan', 'GET')
+        .then(response => this.setState({plans: response}))
+        .catch(error => console.log(error));
   }
 
   render() {
@@ -146,7 +173,7 @@ class MainPage extends Component {
               textStyle={{color: 'black'}}
               activeTabStyle={{backgroundColor: '#455a64'}}
               activeTextStyle={{color: 'black', fontWeight: 'bold'}}>
-              <Jobs products={this.state.products} lands={this.state.lands} />
+              <Jobs products={this.state.products} lands={this.state.lands} plans={this.state.plans} addPlan={this.addPlan} deletePlan={this.deletePlan}/>
             </Tab>
           </Tabs>
         </Content>
