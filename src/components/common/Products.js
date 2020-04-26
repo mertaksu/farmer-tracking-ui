@@ -10,7 +10,7 @@ import {
   Input,
   Item,
 } from 'native-base';
-import {SafeAreaView, YellowBox} from 'react-native';
+import {SafeAreaView, StyleSheet, YellowBox} from 'react-native';
 
 YellowBox.ignoreWarnings([
   'VirtualizedLists should never be nested', // TODO: Remove when fixed
@@ -21,6 +21,7 @@ class Products extends Component {
     super(props);
     this.state = {
       productName: '',
+      error:'',
     };
     this.deleteProduct = this.deleteProduct.bind(this);
     this.addProduct = this.addProduct.bind(this);
@@ -31,8 +32,12 @@ class Products extends Component {
   }
 
   addProduct(productName) {
-    this.props.addProduct(productName);
-    this.setState({productName: ''});
+      if(productName==='') {
+          this.setState({error: 'Ürün adı zorunludur'})
+      } else {
+          this.props.addProduct(productName);
+          this.setState({productName: '',error:''});
+      }
   }
 
   render() {
@@ -79,9 +84,21 @@ class Products extends Component {
           onPress={() => this.addProduct(this.state.productName)}>
           <Text>Ekle</Text>
         </Button>
+          <Text style={styles.errorTextStyle}>
+              {this.state.error}
+          </Text>
       </Content>
     );
   }
 }
+
+
+const styles = StyleSheet.create({
+    errorTextStyle: {
+        alignSelf: 'center',
+        fontSize: 18,
+        color: 'red'
+    }
+});
 
 export {Products};

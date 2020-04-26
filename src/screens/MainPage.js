@@ -12,12 +12,12 @@ import {
   Tabs,
   Title,
 } from 'native-base';
-
 import {Land} from '../components/common/Land';
 import {Products} from '../components/common/Products';
 import {Jobs} from '../components/common/Jobs';
 import {service} from '../services/service';
-import {StyleSheet} from 'react-native';
+import {StyleSheet,AsyncStorage,View} from 'react-native';
+import {Logo} from "../components/common/Logo";
 
 class MainPage extends Component {
   constructor(props) {
@@ -26,6 +26,7 @@ class MainPage extends Component {
       lands: [],
       products: [],
       plans: [],
+      token: null
     };
     this.getProducts = this.getProducts.bind(this);
     this.getLand = this.getLand.bind(this);
@@ -36,89 +37,86 @@ class MainPage extends Component {
     this.addLand = this.addLand.bind(this);
     this.deletePlan = this.deletePlan.bind(this);
     this.addPlan = this.addPlan.bind(this);
+    this.signOut = this.signOut.bind(this);
+  }
+
+  async getToken() {
+    await AsyncStorage.getItem('farmerToken').then(token => {
+      this.setState({token: token});
+    });
+  }
+
+  async signOut() {
+    AsyncStorage.removeItem('farmerToken').then();
+    this.setState({token: ''});
+    this.props.navigation.navigate('Auth');
   }
 
   componentDidMount() {
+    this.loadPage().then();
+  }
+
+  async loadPage(){
+    await this.getToken();
     this.getProducts();
     this.getLand();
     this.getPlan();
   }
 
   async deleteProduct(id) {
-    console.log('Delete Product Called');
-    await service('/crop/' + id, 'DELETE').then(response =>
-      console.log('Delete Product Response:' + response),
-    );
+    await service(this.state.token,'/crop/' + id, 'DELETE');
     await this.getProducts();
     await this.getPlan();
   }
 
   async addProduct(productName) {
-    console.log('Add Product Called ProductName:' + productName);
     let request = {
       cropName: productName,
     };
-    await service('/crop', 'POST', request).then(response =>
-      console.log('Add Product Response:' + JSON.stringify(response)),
-    ).catch(error => console.log(error));
+    await service(this.state.token,'/crop', 'POST', request);
     await this.getProducts();
   }
 
   async deleteLand(id) {
-    console.log('Delete Land Called');
-    await service('/land/' + id, 'DELETE').then(response =>
-      console.log('Delete Land Response:' + response),
-    );
+    await service(this.state.token,'/land/' + id, 'DELETE');
     await this.getLand();
     await this.getPlan();
   }
 
   async addLand(landName,lat,lon) {
-    console.log('Add Land Called LandName: '+landName+' Latitude: '+lat+' Longitude: '+lon);
     let request = {
       landName: landName,
       latitude: lat,
       longitude: lon
     };
-    await service('/land', 'POST', request).then(response =>
-      console.log('Add Land Response:' + JSON.stringify(response)),
-    ).catch(error => console.log(error));
+    await service(this.state.token,'/land', 'POST', request);
     await this.getLand();
   }
 
   async deletePlan(planId) {
-    console.log("Delete Plan Called");
-    await service('/plan/'+planId,'DELETE')
-        .then(response => console.log("Delete Plan Response"+response))
-        .catch(error => console.log(error));
+    await service(this.state.token,'/plan/'+planId,'DELETE');
     await this.getPlan();
   }
 
   async addPlan(planRequest) {
-    console.log('Add Plan Called');
-    await service('/plan', 'POST',planRequest)
-        .then(response => console.log("Add Plan Response "+response))
-        .catch(error => console.log(error));
+    await service(this.state.token,'/plan', 'POST',planRequest);
     await this.getPlan();
   }
 
   getProducts() {
-    console.log('Get Product Called');
-    service('/crop', 'GET')
+    service(this.state.token,'/crop', 'GET')
       .then(response => this.setState({products: response}))
       .catch(error => console.log(error));
   }
 
   getLand() {
-    console.log('Get Land Called');
-    service('/land', 'GET')
+    service(this.state.token,'/land', 'GET')
       .then(response => this.setState({lands: response}))
       .catch(error => console.log(error));
   }
 
   getPlan() {
-    console.log('Get Plans Called');
-    service('/plan', 'GET')
+    service(this.state.token,'/plan', 'GET')
         .then(response => this.setState({plans: response}))
         .catch(error => console.log(error));
   }
@@ -134,10 +132,10 @@ class MainPage extends Component {
               </Button>
             </Left>
             <Body>
-              <Title>Ciftçi Portal</Title>
+              <Logo styles={{width: 200, height: 50}} logoSrc={require('../images/new_logo.png')}/>
             </Body>
             <Right>
-              <Button transparent>
+              <Button transparent onPress={this.signOut}>
                 <Icon name="md-exit" />
               </Button>
             </Right>

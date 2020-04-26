@@ -1,84 +1,108 @@
 import React, {Component, Fragment} from 'react';
-import {Text, View, StatusBar} from 'react-native';
-import LoggedIn from './LoggedIn';
+import {Text, View, AsyncStorage} from 'react-native';
+import {service} from '../services/service';
 import {Input} from '../components/common/Input';
 import {TextLink} from '../components/common/TextLink';
 import {Loading} from '../components/common/Loading';
 import {Button} from '../components/common/Button';
-class Login extends Component {
+import {Logo} from "../components/common/Logo";
+
+export default class Login extends Component {
+
   constructor(props) {
     super(props);
     this.state = {
-      email: '',
+      username: '',
       password: '',
       error: '',
       loading: false,
     };
+    this.login = this.login.bind(this);
   }
 
   render() {
-    const {email, password, error, loading} = this.state;
+
+    const {username, password, error, loading} = this.state;
     const {form, section, errorTextStyle} = styles;
 
     return (
-      <Fragment>
-        <View style={form}>
-          <StatusBar backgroudColor="#1c313a" barStyle="light-content" />
-          <View style={section}>
-            <Input
-              label="Email"
-              placeholder="emal@email.com"
-              placeholderTextColor="black"
-              value={email}
-              onChangeText={email => this.setState({email})}
-            />
-          </View>
+        <>
+            <View style={form}>
+              <Logo logoSrc={require('../images/new_logo.png')}/>
+              <View style={section}>
+              <Input
+                  placeholder="Kullanıcı Adı"
+                  label="Kullanıcı Adı"
+                  value={username}
+                  onChangeText={username => this.setState({ username })}
+              />
+            </View>
 
-          <View style={section}>
-            <Input
-              label="Password"
-              secureTextEntry
-              placeholder="Password"
-              placeholderTextColor="black"
-              value={password}
-              onChangeText={password => this.setState({password})}
-            />
-          </View>
+            <View style={section}>
+              <Input
+                  secureTextEntry
+                  placeholder="Şifre"
+                  label="Şifre"
+                  value={password}
+                  onChangeText={password => this.setState({ password })}
+              />
+            </View>
 
-          <Text style={errorTextStyle}>{error}</Text>
+            <Text style={errorTextStyle}>
+              {error}
+            </Text>
 
-          {!loading ? <Button>Login</Button> : <Loading size={'large'} />}
-        </View>
-        <TextLink onPress={this.props.authSwitch}>
-          Don't have an account? Register!
-        </TextLink>
-      </Fragment>
+            {!loading ?
+                <Button onPress={this.login}>
+                  Giriş Yap
+                </Button>
+                :
+                <Loading size={'large'} />
+            }
+            <TextLink onPress={this.props.authSwitch}>
+              Bir hesabınız yok mu? Kayıt ol!
+            </TextLink>
+            </View>
+        </>
     );
   }
+
+  async login() {
+    const loginReq = {
+      username: this.state.username,
+      password: this.state.password
+    };
+    await service(null,'/login','POST',loginReq)
+        .then(response => {
+          if(response && response.ok) {
+            const token = response.headers.get('authorization');
+            AsyncStorage.setItem('farmerToken',token);
+            this.props.navigation.navigate('MainPage');
+          }
+        });
+  }
+
 }
 
 const styles = {
   form: {
-    width: '90%',
-    borderTopWidth: 1,
-    borderColor: '#455a64',
-    justifyContent: 'space-around',
+    flex: 1,
+    justifyContent: 'center',
     alignItems: 'center',
+    width: '100%',
+    borderTopWidth: 1,
+    borderColor: '#ddd',
+    backgroundColor: '#455a64',
   },
   section: {
-    border: 5,
-    borderRadius: 25,
     flexDirection: 'row',
-    placeholderTextColor: 'red',
-    borderBottomWidth: 2,
-    borderColor: 'black',
-    marginVertical: 10,
+    borderBottomWidth: 1,
+    backgroundColor: '#455a64',
+    borderColor: '#ddd',
   },
   errorTextStyle: {
     alignSelf: 'center',
     fontSize: 18,
-    color: 'red',
-  },
+    color: 'red'
+  }
 };
-
-export {Login};

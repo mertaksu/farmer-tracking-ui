@@ -23,7 +23,9 @@ const Input = ({
         autoCorrect={false}
         multiline={multiline}
         numberOfLines={numberOfLines}
+        autoCapitalize = 'none'
         style={inputStyle}
+        placeholderTextColor='gray'
       />
     </View>
   );
@@ -34,12 +36,12 @@ const styles = {
     height: 40,
     flex: 1,
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'center'
   },
   labelStyle: {
     fontSize: 16,
     paddingLeft: 20,
-    flex: 1,
+    flex: 1
   },
   inputStyle: {
     color: '#000',
@@ -47,8 +49,8 @@ const styles = {
     paddingLeft: 5,
     fontSize: 18,
     lineHeight: 23,
-    flex: 3,
-  },
+    flex: 3
+  }
 };
 
 export {Input};

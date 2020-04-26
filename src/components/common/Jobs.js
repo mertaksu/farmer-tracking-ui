@@ -17,7 +17,6 @@ import {View, StyleSheet, YellowBox} from 'react-native';
 import {Calendar, LocaleConfig} from 'react-native-calendars';
 import moment from 'moment';
 import RadioForm from 'react-native-simple-radio-button';
-import {SafeAreaView} from 'react-native';
 import {
   Collapse,
   CollapseHeader,
@@ -81,6 +80,7 @@ class Jobs extends Component {
       sulamaRadio: false,
       selectedRadio: 'Gübreleme',
       collapsed: false,
+      error: ''
     };
     this.addPlan = this.addPlan.bind(this);
     this.deletePlan = this.deletePlan.bind(this);
@@ -114,12 +114,24 @@ class Jobs extends Component {
       planDate: selectedDates,
       planType: this.state.selectedRadio,
     };
-    this.props.addPlan(requestBody);
+    if(this.state.selectedProduct==='' || this.state.selectedProduct===undefined) {
+      this.setState({error:'Ürün Seçimi zorunludur'});
+    }
+    else if(this.state.selectedLand==='' || this.state.selectedLand===undefined) {
+      this.setState({error:'Arazi Seçimiz zorunludur'});
+    }
+    else if(selectedDates.length===0) {
+      this.setState({error:'Tarih Seçimiz zorunludur'});
+    }
+    else {
+      this.props.addPlan(requestBody);
 
-    this.setState({selectedProduct: undefined});
-    this.setState({selectedLand: undefined});
-    this.setState({markedDates: {}});
-    this.setState({collapsed: false});
+      this.setState({selectedProduct: undefined});
+      this.setState({selectedLand: undefined});
+      this.setState({markedDates: {}});
+      this.setState({collapsed: false});
+      this.setState({error:''});
+    }
   }
 
   async deletePlan(id) {
@@ -245,6 +257,9 @@ class Jobs extends Component {
                   <Button block onPress={() => this.addPlan()}>
                     <Text>Ekle</Text>
                   </Button>
+                  <Text style={styles.errorTextStyle}>
+                    {this.state.error}
+                  </Text>
                 </Form>
               </Content>
             </CollapseBody>
@@ -355,6 +370,11 @@ const styles = StyleSheet.create({
     backgroundColor: 'lightgrey',
     fontSize: 16,
   },
+  errorTextStyle: {
+    alignSelf: 'center',
+    fontSize: 18,
+    color: 'red'
+  }
 });
 
 export {Jobs};

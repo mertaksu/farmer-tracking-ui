@@ -1,18 +1,21 @@
 import React, {Component} from 'react';
-import {View} from 'react-native';
+import {View,AsyncStorage} from 'react-native';
 import {Registration} from './Registration';
-import {Login} from './Login';
+import Login from './Login';
 import {Logo} from '../components/common/Logo';
-import Routes from '../components/common/Routes';
-import {Land} from '../components/common/Land';
 import {MainPage} from './MainPage';
 
+
+
 export default class Auth extends Component {
+
   constructor(props) {
     super(props);
     this.state = {
       showLogin: true,
+      token: null,
     };
+
     this.whichForm = this.whichForm.bind(this);
     this.authSwitch = this.authSwitch.bind(this);
   }
@@ -23,23 +26,44 @@ export default class Auth extends Component {
     });
   }
 
+  componentDidMount() {
+    this.getToken().then();
+  }
+
+  async getToken() {
+    await AsyncStorage.getItem('farmerToken').then(token => {
+      this.setState({token: token});
+    });
+  }
+
   whichForm() {
-    if (!this.state.showLogin) {
-      return <Registration authSwitch={this.authSwitch} />;
+    this.getToken().then();
+    const { navigation } = this.props;
+    if(this.state.token != null) {
+      return <MainPage navigation={navigation}/>
     } else {
-      return <Login authSwitch={this.authSwitch} />;
+      if (!this.state.showLogin) {
+        return <Registration navigation={navigation} authSwitch={this.authSwitch} />;
+      } else {
+        return <Login navigation={navigation} authSwitch={this.authSwitch} />;
+      }
     }
   }
 
   render() {
-    return <MainPage />;
+    return(
+        <View style={styles.form}>
+          {this.whichForm()}
+        </View>
+    );
   }
 }
 
 const styles = {
   form: {
     flex: 1,
-    justifyContent: 'space-around',
+    justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: '#455a64',
   },
 };

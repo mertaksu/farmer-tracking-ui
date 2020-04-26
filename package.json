@@ -12,8 +12,8 @@
   "dependencies": {
     "@ant-design/react-native": "^3.2.2",
     "@react-native-community/masked-view": "^0.1.6",
-    "@react-navigation/native": "^5.0.0",
-    "@react-navigation/stack": "^5.0.0",
+    "@react-navigation/native": "^5.1.6",
+    "@react-navigation/stack": "^5.2.13",
     "accordion-collapse-react-native": "^0.2.8",
     "moment": "^2.24.0",
     "native-base": "^2.13.12",
@@ -26,7 +26,8 @@
     "react-native-router-flux": "^4.2.0",
     "react-native-safe-area-context": "^0.7.2",
     "react-native-screens": "^2.0.0-beta.2",
-    "react-native-simple-radio-button": "^2.7.4"
+    "react-native-simple-radio-button": "^2.7.4",
+    "react-navigation": "latest"
   },
   "devDependencies": {
     "@babel/core": "7.8.3",

@@ -4,6 +4,7 @@ import {externalService} from '../../services/service';
 import {Body, Right, Content, Button, List, ListItem, Input, Container} from 'native-base';
 import {SafeAreaView, YellowBox, TouchableOpacity, StyleSheet} from 'react-native';
 import Autocomplete from 'react-native-autocomplete-input';
+import taggedTemplateLiteral from "@babel/runtime/helpers/esm/taggedTemplateLiteral";
 
 YellowBox.ignoreWarnings([
   'VirtualizedLists should never be nested', // TODO: Remove when fixed
@@ -15,17 +16,20 @@ class Land extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      landName: '',
+        landName: '',
         places: [],
         placeQuery: '',
         selectedPlaceLat: '',
         selectedPlaceLon: '',
+        error: ''
     };
     this.deleteLand = this.deleteLand.bind(this);
     this.addLand = this.addLand.bind(this);
+    this.findPlace = this.findPlace.bind(this);
+    this.selectPlace = this.selectPlace.bind(this);
   }
 
-    onPressFn(name, lat, lon) {
+    selectPlace(name, lat, lon) {
         this.setState({placeQuery : name, selectedPlaceLat : lat, selectedPlaceLon: lon, places: []});
         console.log(name+" "+lat+" "+lon);
     }
@@ -61,8 +65,14 @@ class Land extends Component {
   }
 
   async addLand(landName,lat,lon) {
-    this.props.addLand(landName,lat,lon);
-    this.setState({landName: '',places: [],placeQuery: '',selectedPlaceLat: '',selectedPlaceLon:''});
+      if(landName==='')
+          this.setState({error:'Arazi adı boş olamaz'});
+      else if (lat==='' || lon==='')
+          this.setState({error:'Arazi Lokasyonu boş olamaz'});
+      else {
+          this.props.addLand(landName,lat,lon);
+          this.setState({landName: '',places: [],placeQuery: '',selectedPlaceLat: '',selectedPlaceLon:'',error:''});
+      }
   }
 
   render() {
@@ -94,42 +104,46 @@ class Land extends Component {
             keyExtractor={(item, index) => index.toString()}
           />
         </SafeAreaView>
-        <Item rounded style={{margin: 10}}>
-          <Input
-            placeholderTextColor={'gray'}
-            placeholder="Arazi Adı"
-            value={this.state.landName}
-            onChangeText={value => this.setState({landName: value})}
-          />
-        </Item>
-        <Item rounded style={{margin: 10}}>
-          <Autocomplete
-              autoCapitalize="none"
-              autoCorrect={false}
-              style={styles.container}
-              inputContainerStyle={{borderWidth: 0}}
-              containerStyle={styles.autocompleteContainer}
-              data={this.state.places}
-              defaultValue={this.state.placeQuery}
-              onChangeText={text => this.findPlace(text)}
-              placeholder="Arazi Lokasyonu"
-              placeholderTextColor={'gray'}
-              renderItem={({ item }) => (
-                  <TouchableOpacity onPress={() => this.onPressFn(item.name, item.lat, item.lon)}>
-                      <Text style={styles.itemText}>
-                          <Text style={{ fontWeight: 'bold' }}>{item.name}</Text>
-                          {item.name !== item.address && '\n' + item.address}
-                      </Text>
-                  </TouchableOpacity>
-              )}
-              keyExtractor={(item, index) => index.toString()}
-          />
-          </Item>
+
           <Button block
                   style={{margin: 10}}
                   onPress={() => this.addLand(this.state.landName,this.state.selectedPlaceLat,this.state.selectedPlaceLon)}>
               <Text>Ekle</Text>
           </Button>
+            <Item rounded style={{margin: 10}}>
+                <Input
+                    placeholderTextColor={'gray'}
+                    placeholder="Arazi Adı"
+                    value={this.state.landName}
+                    onChangeText={value => this.setState({landName: value})}
+                />
+            </Item>
+            <Item rounded style={{margin: 10}}>
+                <Autocomplete
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                    style={styles.container}
+                    inputContainerStyle={{borderWidth: 0}}
+                    containerStyle={styles.autocompleteContainer}
+                    data={this.state.places}
+                    defaultValue={this.state.placeQuery}
+                    onChangeText={text => this.findPlace(text)}
+                    placeholder="Arazi Lokasyonu"
+                    placeholderTextColor={'gray'}
+                    renderItem={({ item }) => (
+                        <TouchableOpacity onPress={() => this.selectPlace(item.name, item.lat, item.lon)}>
+                            <Text style={styles.itemText}>
+                                <Text style={{ fontWeight: 'bold' }}>{item.name}</Text>
+                                {item.name !== item.address && '\n' + item.address}
+                            </Text>
+                        </TouchableOpacity>
+                    )}
+                    keyExtractor={(item, index) => index.toString()}
+                />
+            </Item>
+            <Text style={styles.errorTextStyle}>
+                {this.state.error}
+            </Text>
         </Content>
         </Container>
     );
@@ -160,6 +174,11 @@ const styles = StyleSheet.create({
         fontSize: 25,
         margin: 2,
     },
+    errorTextStyle: {
+        alignSelf: 'center',
+        fontSize: 18,
+        color: 'red'
+    }
 });
 
 export {Land};

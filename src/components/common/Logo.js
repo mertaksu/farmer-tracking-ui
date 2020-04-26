@@ -6,8 +6,8 @@ export class Logo extends Component {
     return (
       <View>
         <Image
-          style={{width: 150, height: 90}}
-          source={require('../../images/logo.png')}
+          style={this.props.styles}
+          source={this.props.logoSrc}
         />
       </View>
     );
