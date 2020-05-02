@@ -1,6 +1,5 @@
 
-const baseURL = 'http://192.168.1.38:8080';
-
+const baseURL = 'http://64.227.113.38:8080';
 export function service(token, path,method, body) {
   return fetch(baseURL + path, {
     method: method,

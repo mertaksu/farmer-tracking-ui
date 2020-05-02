@@ -10,14 +10,14 @@ import {
   Right,
   Tab,
   Tabs,
-  Title,
 } from 'native-base';
 import {Land} from '../components/common/Land';
 import {Products} from '../components/common/Products';
 import {Jobs} from '../components/common/Jobs';
 import {service} from '../services/service';
-import {StyleSheet,AsyncStorage,View} from 'react-native';
+import {StyleSheet,AsyncStorage} from 'react-native';
 import {Logo} from "../components/common/Logo";
+import Loader from "../components/common/Loader";
 
 class MainPage extends Component {
   constructor(props) {
@@ -26,7 +26,8 @@ class MainPage extends Component {
       lands: [],
       products: [],
       plans: [],
-      token: null
+      token: null,
+      loading: false,
     };
     this.getProducts = this.getProducts.bind(this);
     this.getLand = this.getLand.bind(this);
@@ -47,13 +48,17 @@ class MainPage extends Component {
   }
 
   async signOut() {
+    this.setState({loading: true});
     AsyncStorage.removeItem('farmerToken').then();
     this.setState({token: ''});
     this.props.navigation.navigate('Auth');
+    this.setState({loading: false});
   }
 
   componentDidMount() {
+    this.setState({loading: true});
     this.loadPage().then();
+    this.setState({loading: false});
   }
 
   async loadPage(){
@@ -64,26 +69,33 @@ class MainPage extends Component {
   }
 
   async deleteProduct(id) {
+    this.setState({loading: true});
     await service(this.state.token,'/crop/' + id, 'DELETE');
     await this.getProducts();
     await this.getPlan();
+    this.setState({loading: false});
   }
 
   async addProduct(productName) {
+    this.setState({loading: true});
     let request = {
       cropName: productName,
     };
     await service(this.state.token,'/crop', 'POST', request);
     await this.getProducts();
+    this.setState({loading: false});
   }
 
   async deleteLand(id) {
+    this.setState({loading: true});
     await service(this.state.token,'/land/' + id, 'DELETE');
     await this.getLand();
     await this.getPlan();
+    this.setState({loading: false});
   }
 
   async addLand(landName,lat,lon) {
+    this.setState({loading: true});
     let request = {
       landName: landName,
       latitude: lat,
@@ -91,16 +103,21 @@ class MainPage extends Component {
     };
     await service(this.state.token,'/land', 'POST', request);
     await this.getLand();
+    this.setState({loading: false});
   }
 
   async deletePlan(planId) {
+    this.setState({loading: true});
     await service(this.state.token,'/plan/'+planId,'DELETE');
     await this.getPlan();
+    this.setState({loading: false});
   }
 
   async addPlan(planRequest) {
+    this.setState({loading: true});
     await service(this.state.token,'/plan', 'POST',planRequest);
     await this.getPlan();
+    this.setState({loading: false});
   }
 
   getProducts() {
@@ -124,6 +141,8 @@ class MainPage extends Component {
   render() {
     return (
       <Container style={styles.container}>
+        <Loader
+            loading={this.state.loading} />
         <Content>
           <Header hasSegment style={{backgroundColor: '#455a64'}}>
             <Left>

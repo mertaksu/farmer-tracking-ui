@@ -6,6 +6,7 @@ import {TextLink} from '../components/common/TextLink';
 import {Loading} from '../components/common/Loading';
 import {Button} from '../components/common/Button';
 import {Logo} from "../components/common/Logo";
+import Loader from "../components/common/Loader";
 
 export default class Login extends Component {
 
@@ -28,6 +29,8 @@ export default class Login extends Component {
     return (
         <>
             <View style={form}>
+              <Loader
+                  loading={this.state.loading} />
               <Logo logoSrc={require('../images/new_logo.png')}/>
               <View style={section}>
               <Input
@@ -68,6 +71,7 @@ export default class Login extends Component {
   }
 
   async login() {
+    this.setState({loading: true});
     const loginReq = {
       username: this.state.username,
       password: this.state.password
@@ -78,6 +82,7 @@ export default class Login extends Component {
             const token = response.headers.get('authorization');
             AsyncStorage.setItem('farmerToken',token);
             this.props.navigation.navigate('MainPage');
+            this.setState({loading: false});
           }
         });
   }

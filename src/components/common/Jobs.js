@@ -11,7 +11,7 @@ import {
   Right,
   Body,
   Separator,
-  Left,
+  Left, Container,
 } from 'native-base';
 import {View, StyleSheet, YellowBox} from 'react-native';
 import {Calendar, LocaleConfig} from 'react-native-calendars';
@@ -22,6 +22,7 @@ import {
   CollapseHeader,
   CollapseBody,
 } from 'accordion-collapse-react-native';
+import Loader from "./Loader";
 
 YellowBox.ignoreWarnings([
   'VirtualizedLists should never be nested', // TODO: Remove when fixed
@@ -71,8 +72,8 @@ class Jobs extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedLand: undefined,
-      selectedProduct: undefined,
+      selectedLand: props.lands.length>0 ? props.lands[0].id : '',
+      selectedProduct: props.products.length>0 ? props.products[0].id : '',
       chosenDate: new Date(),
       markedDates: {},
       gubreRadio: false,
@@ -80,7 +81,8 @@ class Jobs extends Component {
       sulamaRadio: false,
       selectedRadio: 'Gübreleme',
       collapsed: false,
-      error: ''
+      error: '',
+      loading: false,
     };
     this.addPlan = this.addPlan.bind(this);
     this.deletePlan = this.deletePlan.bind(this);
@@ -114,23 +116,25 @@ class Jobs extends Component {
       planDate: selectedDates,
       planType: this.state.selectedRadio,
     };
-    if(this.state.selectedProduct==='' || this.state.selectedProduct===undefined) {
+    if(this.state.selectedProduct==='') {
       this.setState({error:'Ürün Seçimi zorunludur'});
     }
-    else if(this.state.selectedLand==='' || this.state.selectedLand===undefined) {
+    else if(this.state.selectedLand==='') {
       this.setState({error:'Arazi Seçimiz zorunludur'});
     }
     else if(selectedDates.length===0) {
       this.setState({error:'Tarih Seçimiz zorunludur'});
     }
     else {
+      this.setState({loading: true});
       this.props.addPlan(requestBody);
 
-      this.setState({selectedProduct: undefined});
-      this.setState({selectedLand: undefined});
+      this.setState({selectedProduct: this.props.products ? this.props.products[0].id : ''});
+      this.setState({selectedLand: this.props.lands ? this.props.lands[0].id : ''});
       this.setState({markedDates: {}});
       this.setState({collapsed: false});
       this.setState({error:''});
+      this.setState({loading: false});
     }
   }
 
@@ -141,6 +145,8 @@ class Jobs extends Component {
   render() {
     return (
       <Fragment>
+        <Loader
+            loading={this.state.loading} />
         <Content
           padder
           style={{backgroundColor: '#455a64'}}
@@ -305,22 +311,22 @@ class Jobs extends Component {
                           }}>
                           <Text
                             style={{
-                              width: '25%',
+                              width: '20%',
                               fontWeight: 'bold',
                               color: '#fff',
                             }}>
                             Arazi:
                           </Text>
-                          <Text style={{color: '#fff'}}>{item.landName}</Text>
+                          <Text style={{color: '#fff',width: '40%'}}>{item.landName}</Text>
                           <Text
                             style={{
-                              width: '25%',
+                              width: '20%',
                               fontWeight: 'bold',
                               color: '#fff',
                             }}>
                             Ekin:
                           </Text>
-                          <Text style={{color: '#fff'}}>{item.cropName}</Text>
+                          <Text style={{color: '#fff',width: '40%'}}>{item.cropName}</Text>
                         </View>
                         <View
                           style={{
@@ -330,22 +336,22 @@ class Jobs extends Component {
                           }}>
                           <Text
                             style={{
-                              width: '25%',
+                              width: '20%',
                               fontWeight: 'bold',
                               color: '#fff',
                             }}>
                             İş:
                           </Text>
-                          <Text style={{color: '#fff'}}>{item.planType}</Text>
+                          <Text style={{color: '#fff',width: '40%'}}>{item.planType}</Text>
                           <Text
                             style={{
-                              width: '25%',
+                              width: '20%',
                               fontWeight: 'bold',
                               color: '#fff',
                             }}>
                             Tarih:
                           </Text>
-                          <Text style={{color: '#fff'}}>{item.planDate}</Text>
+                          <Text style={{color: '#fff',width: '40%'}}>{item.planDate}</Text>
                         </View>
                       </View>
                     </Body>

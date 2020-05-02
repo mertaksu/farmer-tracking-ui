@@ -2,9 +2,9 @@ import React, {Component} from 'react';
 import {Item, Text} from 'native-base';
 import {externalService} from '../../services/service';
 import {Body, Right, Content, Button, List, ListItem, Input, Container} from 'native-base';
-import {SafeAreaView, YellowBox, TouchableOpacity, StyleSheet} from 'react-native';
+import {SafeAreaView, YellowBox, StyleSheet} from 'react-native';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 import Autocomplete from 'react-native-autocomplete-input';
-import taggedTemplateLiteral from "@babel/runtime/helpers/esm/taggedTemplateLiteral";
 
 YellowBox.ignoreWarnings([
   'VirtualizedLists should never be nested', // TODO: Remove when fixed
@@ -104,12 +104,6 @@ class Land extends Component {
             keyExtractor={(item, index) => index.toString()}
           />
         </SafeAreaView>
-
-          <Button block
-                  style={{margin: 10}}
-                  onPress={() => this.addLand(this.state.landName,this.state.selectedPlaceLat,this.state.selectedPlaceLon)}>
-              <Text>Ekle</Text>
-          </Button>
             <Item rounded style={{margin: 10}}>
                 <Input
                     placeholderTextColor={'gray'}
@@ -141,6 +135,11 @@ class Land extends Component {
                     keyExtractor={(item, index) => index.toString()}
                 />
             </Item>
+            <Button block
+                    style={{margin: 10}}
+                    onPress={() => this.addLand(this.state.landName,this.state.selectedPlaceLat,this.state.selectedPlaceLon)}>
+                <Text>Ekle</Text>
+            </Button>
             <Text style={styles.errorTextStyle}>
                 {this.state.error}
             </Text>
@@ -153,7 +152,6 @@ class Land extends Component {
 const styles = StyleSheet.create({
     container: {
         paddingLeft: 8,
-        height: 50,
         color: '#000',
         paddingRight: 5,
         fontSize: 17,
@@ -161,7 +159,6 @@ const styles = StyleSheet.create({
     },
     autocompleteContainer: {
         borderWidth: 0,
-        height:50,
         borderRadius: 30,
         flex: 1,
         left: 0,
