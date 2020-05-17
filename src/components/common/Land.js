@@ -1,16 +1,20 @@
 import React, {Component} from 'react';
 import {Item, Text} from 'native-base';
 import {externalService} from '../../services/service';
-import {Body, Right, Content, Button, List, ListItem, Input, Container} from 'native-base';
-import {SafeAreaView, YellowBox, StyleSheet} from 'react-native';
+import {Body, Right, Content, Button, List, ListItem, Input, Container, Footer} from 'native-base';
+import {SafeAreaView, YellowBox, StyleSheet,ScrollView,View} from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import Autocomplete from 'react-native-autocomplete-input';
+import PlacesInput from 'react-native-places-input';
+import {textColor} from "react-native-calendars/src/style";
+
 
 YellowBox.ignoreWarnings([
   'VirtualizedLists should never be nested', // TODO: Remove when fixed
 ]);
 
-const TOMTOM_API_KEY = 'Qodx75nrtD8C5T6nV89ZnaQt8eDgzzaG';
+const GOOGLE_API_KEY = 'AIzaSyA5usjKDAhTUkdHFzsM8YawhYXJEY-0cig';
 
 class Land extends Component {
   constructor(props) {
@@ -43,10 +47,9 @@ class Land extends Component {
                     let results = resp.results;
                     let places = [];
                     for (let val of results) {
-                        if (val.type==="Geography") {
+                        if (val.type==="Geography" || val.type==="POI") {
                             places.push({
-                                name: val.address.freeformAddress,
-                                address: val.address.freeformAddress,
+                                name: val.address.municipality+"("+val.address.municipalitySubdivision+")",
                                 lat: val.position.lat,
                                 lon: val.position.lon,
                             });
@@ -77,11 +80,15 @@ class Land extends Component {
 
   render() {
     return (
-        <Container>
+        <View style={{flex:1}}>
+            <ScrollView
+                keyboardShouldPersistTaps="always">
+        <Container style={{flex:1}}>
         <Content
         padder
-        style={{backgroundColor: '#455a64'}}
+        style={{flex:1,backgroundColor: '#455a64',height:50}}
         scrollEnabled={false}>
+
         <SafeAreaView style={{margin: 10, flex: 1}}>
           <List
             dataArray={this.props.lands}
@@ -104,6 +111,7 @@ class Land extends Component {
             keyExtractor={(item, index) => index.toString()}
           />
         </SafeAreaView>
+
             <Item rounded style={{margin: 10}}>
                 <Input
                     placeholderTextColor={'gray'}
@@ -113,38 +121,54 @@ class Land extends Component {
                 />
             </Item>
             <Item rounded style={{margin: 10}}>
-                <Autocomplete
-                    autoCapitalize="none"
-                    autoCorrect={false}
-                    style={styles.container}
-                    inputContainerStyle={{borderWidth: 0}}
-                    containerStyle={styles.autocompleteContainer}
-                    data={this.state.places}
-                    defaultValue={this.state.placeQuery}
-                    onChangeText={text => this.findPlace(text)}
-                    placeholder="Arazi Lokasyonu"
-                    placeholderTextColor={'gray'}
-                    renderItem={({ item }) => (
-                        <TouchableOpacity onPress={() => this.selectPlace(item.name, item.lat, item.lon)}>
-                            <Text style={styles.itemText}>
-                                <Text style={{ fontWeight: 'bold' }}>{item.name}</Text>
-                                {item.name !== item.address && '\n' + item.address}
-                            </Text>
-                        </TouchableOpacity>
-                    )}
-                    keyExtractor={(item, index) => index.toString()}
+                <PlacesInput
+                    stylesContainer={{
+                        position: 'relative',
+                        alignSelf: 'stretch',
+                        margin: 0,
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        shadowOpacity: 0,
+                        borderColor: '#455a64',
+                        borderWidth: 2,
+                        marginBottom: 0,
+                        borderRadius: 30,
+                        backgroundColor: '#455a64',
+                        flex: 1,
+                        zIndex: 1,
+                        placeHolderTextColor: '#808080'
+                    }}
+                    stylesList={{
+                        bottom:0,
+                        position: 'relative',
+                        borderColor: '#ffffff',
+                        borderLeftWidth: 1,
+                        borderRightWidth: 1,
+                        borderBottomWidth: 1,
+                        left: -1,
+                        right: -1,
+                    }}
+                    googleApiKey={GOOGLE_API_KEY}
+                    placeHolder="Arazi Lokasyonu"
+                    language={'tr'}
+                    queryCountries={['tr']}
+                    onSelect={place => console.log("Lat:"+place.result.geometry.location.lat+" Lon:"+place.result.geometry.location.lat)}
                 />
             </Item>
+            <Text style={styles.errorTextStyle}>
+                {this.state.error}
+            </Text>
             <Button block
                     style={{margin: 10}}
                     onPress={() => this.addLand(this.state.landName,this.state.selectedPlaceLat,this.state.selectedPlaceLon)}>
                 <Text>Ekle</Text>
             </Button>
-            <Text style={styles.errorTextStyle}>
-                {this.state.error}
-            </Text>
         </Content>
         </Container>
+            </ScrollView>
+        </View>
     );
   }
 }
@@ -156,6 +180,7 @@ const styles = StyleSheet.create({
         paddingRight: 5,
         fontSize: 17,
         top: 1.5,
+        margin:10
     },
     autocompleteContainer: {
         borderWidth: 0,
@@ -168,7 +193,7 @@ const styles = StyleSheet.create({
         position: 'relative',
     },
     itemText: {
-        fontSize: 25,
+        fontSize: 15,
         margin: 2,
     },
     errorTextStyle: {

@@ -301,13 +301,11 @@ class Jobs extends Component {
                         style={{
                           flex: 1,
                           flexDirection: 'row',
-                          flexWrap: 'wrap',
                         }}>
                         <View
                           style={{
                             flex: 1,
                             flexDirection: 'row',
-                            flexWrap: 'wrap',
                           }}>
                           <Text
                             style={{
@@ -317,7 +315,7 @@ class Jobs extends Component {
                             }}>
                             Arazi:
                           </Text>
-                          <Text style={{color: '#fff',width: '40%'}}>{item.landName}</Text>
+                          <Text style={{color: '#fff',width: '30%'}}>{item.landName}</Text>
                           <Text
                             style={{
                               width: '20%',
@@ -326,17 +324,16 @@ class Jobs extends Component {
                             }}>
                             Ekin:
                           </Text>
-                          <Text style={{color: '#fff',width: '40%'}}>{item.cropName}</Text>
+                          <Text style={{color: '#fff',width: '30%'}}>{item.cropName}</Text>
                         </View>
                         <View
                           style={{
                             flex: 1,
                             flexDirection: 'row',
-                            flexWrap: 'wrap',
                           }}>
                           <Text
                             style={{
-                              width: '20%',
+                              width: '10%',
                               fontWeight: 'bold',
                               color: '#fff',
                             }}>
@@ -351,7 +348,7 @@ class Jobs extends Component {
                             }}>
                             Tarih:
                           </Text>
-                          <Text style={{color: '#fff',width: '40%'}}>{item.planDate}</Text>
+                          <Text style={{color: '#fff',width: '30%'}}>{item.planDate}</Text>
                         </View>
                       </View>
                     </Body>
