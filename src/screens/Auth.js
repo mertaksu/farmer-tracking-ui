@@ -2,10 +2,12 @@ import React, {Component} from 'react';
 import {View,AsyncStorage} from 'react-native';
 import {Registration} from './Registration';
 import Login from './Login';
-import {Logo} from '../components/common/Logo';
-import {MainPage} from './MainPage';
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import MainPage from './MainPage';
+import Screen1 from "../components/common/Screen1";
+import Screen2 from "../components/common/Screen2";
 
-
+const Drawer = createDrawerNavigator();
 
 export default class Auth extends Component {
 
@@ -40,7 +42,14 @@ export default class Auth extends Component {
     this.getToken().then();
     const { navigation } = this.props;
     if(this.state.token != null) {
-      return <MainPage navigation={navigation}/>
+      return (
+       <Drawer.Navigator initialRouteName="MainPage">
+        <Drawer.Screen name="MainPage" component={MainPage}/>
+        <Drawer.Screen name="Screen1" component={Screen1} />
+        <Drawer.Screen name="Screen2" component={Screen2} />
+       </Drawer.Navigator>
+         /* <MainPage navigation={navigation}/> */
+          )
     } else {
       if (!this.state.showLogin) {
         return <Registration navigation={navigation} authSwitch={this.authSwitch} />;
@@ -52,9 +61,7 @@ export default class Auth extends Component {
 
   render() {
     return(
-        <View style={styles.form}>
-          {this.whichForm()}
-        </View>
+        this.whichForm()
     );
   }
 }

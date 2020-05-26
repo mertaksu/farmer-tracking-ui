@@ -15,11 +15,11 @@ import {Land} from '../components/common/Land';
 import {Products} from '../components/common/Products';
 import {Jobs} from '../components/common/Jobs';
 import {service} from '../services/service';
-import {StyleSheet,AsyncStorage} from 'react-native';
+import {StyleSheet,AsyncStorage,Text} from 'react-native';
 import {Logo} from "../components/common/Logo";
 import Loader from "../components/common/Loader";
 
-class MainPage extends Component {
+export default class MainPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -56,6 +56,7 @@ class MainPage extends Component {
   }
 
   componentDidMount() {
+    console.log("MainPage mounted");
     this.setState({loading: true});
     this.loadPage().then();
     this.setState({loading: false});
@@ -140,65 +141,64 @@ class MainPage extends Component {
 
   render() {
     return (
-      <Container style={styles.container}>
-        <Loader
-            loading={this.state.loading} />
-        <Content>
-          <Header hasSegment style={{backgroundColor: '#455a64'}}>
-            <Left>
-              <Button transparent>
-                <Icon name="menu" />
-              </Button>
-            </Left>
-            <Body>
-              <Logo styles={{width: 200, height: 50}} logoSrc={require('../images/new_logo.png')}/>
-            </Body>
-            <Right>
-              <Button transparent onPress={this.signOut}>
-                <Icon name="md-exit" />
-              </Button>
-            </Right>
-          </Header>
-          <Tabs>
-            <Tab
+    <Container style={styles.container}>
+      <Loader
+          loading={this.state.loading} />
+      <Content>
+        <Header hasSegment style={{backgroundColor: '#455a64'}}>
+          <Left>
+            <Button transparent>
+              <Icon name="menu" />
+            </Button>
+          </Left>
+          <Body>
+            <Logo styles={{width: 200, height: 50}} logoSrc={require('../images/new_logo.png')}/>
+          </Body>
+          <Right>
+            <Button transparent onPress={this.signOut}>
+              <Icon name="md-exit" />
+            </Button>
+          </Right>
+        </Header>
+        <Tabs>
+          <Tab
               heading="Ürünler"
               tabStyle={{backgroundColor: '#455a64'}}
               textStyle={{color: 'black'}}
               activeTabStyle={{backgroundColor: '#455a64'}}
               activeTextStyle={{color: 'black', fontWeight: 'bold'}}>
-              <Products
+            <Products
                 products={this.state.products}
                 addProduct={this.addProduct}
                 deleteProduct={this.deleteProduct}
-              />
-            </Tab>
-            <Tab
+            />
+          </Tab>
+          <Tab
               heading="Araziler"
               tabStyle={{backgroundColor: '#455a64'}}
               textStyle={{color: 'black'}}
               activeTabStyle={{backgroundColor: '#455a64'}}
               activeTextStyle={{color: 'black', fontWeight: 'bold'}}>
-              <Land
+            <Land
                 lands={this.state.lands}
                 addLand={this.addLand}
                 deleteLand={this.deleteLand}
-              />
-            </Tab>
-            <Tab
+            />
+          </Tab>
+          <Tab
               heading="Planlı İşler"
               tabStyle={{backgroundColor: '#455a64'}}
               textStyle={{color: 'black'}}
               activeTabStyle={{backgroundColor: '#455a64'}}
               activeTextStyle={{color: 'black', fontWeight: 'bold'}}>
-              <Jobs products={this.state.products} lands={this.state.lands} plans={this.state.plans} addPlan={this.addPlan} deletePlan={this.deletePlan}/>
-            </Tab>
-          </Tabs>
-        </Content>
-      </Container>
+            <Jobs products={this.state.products} lands={this.state.lands} plans={this.state.plans} addPlan={this.addPlan} deletePlan={this.deletePlan}/>
+          </Tab>
+        </Tabs>
+      </Content>
+    </Container>
     );
   }
 }
-export {MainPage};
 
 const styles = StyleSheet.create({
   container: {
