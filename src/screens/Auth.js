@@ -4,7 +4,7 @@ import {Registration} from './Registration';
 import Login from './Login';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import MainPage from './MainPage';
-import Screen1 from "../components/common/Screen1";
+import PreviousJobs from "../components/common/PreviousJobs";
 import Screen2 from "../components/common/Screen2";
 
 const Drawer = createDrawerNavigator();
@@ -44,9 +44,9 @@ export default class Auth extends Component {
     if(this.state.token != null) {
       return (
        <Drawer.Navigator initialRouteName="MainPage">
-        <Drawer.Screen name="MainPage" component={MainPage}/>
-        <Drawer.Screen name="Screen1" component={Screen1} />
-        <Drawer.Screen name="Screen2" component={Screen2} />
+        <Drawer.Screen name="Ana Sayfa" component={MainPage}/>
+        <Drawer.Screen name="Geçmiş Planlı İşler" component={PreviousJobs} />
+        <Drawer.Screen name="Arazilerde Hava Durumu" component={Screen2} />
        </Drawer.Navigator>
          /* <MainPage navigation={navigation}/> */
           )

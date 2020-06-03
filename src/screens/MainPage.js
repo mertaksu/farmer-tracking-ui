@@ -3,7 +3,7 @@ import {
   Body,
   Button,
   Container,
-  Content,
+  Content, Fab,
   Header,
   Icon,
   Left,
@@ -18,6 +18,8 @@ import {service} from '../services/service';
 import {StyleSheet,AsyncStorage,Text} from 'react-native';
 import {Logo} from "../components/common/Logo";
 import Loader from "../components/common/Loader";
+import Auth from "./Auth";
+import Plan from "../components/common/Plan";
 
 export default class MainPage extends Component {
   constructor(props) {
@@ -56,7 +58,6 @@ export default class MainPage extends Component {
   }
 
   componentDidMount() {
-    console.log("MainPage mounted");
     this.setState({loading: true});
     this.loadPage().then();
     this.setState({loading: false});
@@ -147,12 +148,12 @@ export default class MainPage extends Component {
       <Content>
         <Header hasSegment style={{backgroundColor: '#455a64'}}>
           <Left>
-            <Button transparent>
+            <Button transparent onPress={() => this.props.navigation.toggleDrawer()}>
               <Icon name="menu" />
             </Button>
           </Left>
           <Body>
-            <Logo styles={{width: 200, height: 50}} logoSrc={require('../images/new_logo.png')}/>
+
           </Body>
           <Right>
             <Button transparent onPress={this.signOut}>
@@ -191,7 +192,7 @@ export default class MainPage extends Component {
               textStyle={{color: 'black'}}
               activeTabStyle={{backgroundColor: '#455a64'}}
               activeTextStyle={{color: 'black', fontWeight: 'bold'}}>
-            <Jobs products={this.state.products} lands={this.state.lands} plans={this.state.plans} addPlan={this.addPlan} deletePlan={this.deletePlan}/>
+            <Jobs products={this.state.products} lands={this.state.lands} plans={this.state.plans} addPlan={this.addPlan} deletePlan={this.deletePlan} navigation={this.props.navigation}/>
           </Tab>
         </Tabs>
       </Content>

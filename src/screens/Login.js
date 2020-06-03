@@ -7,7 +7,7 @@ import {Loading} from '../components/common/Loading';
 import {Button} from '../components/common/Button';
 import {Logo} from "../components/common/Logo";
 import Loader from "../components/common/Loader";
-import Auth from "./Auth";
+import MainPage from "./MainPage";
 
 export default class Login extends Component {
 
@@ -82,7 +82,7 @@ export default class Login extends Component {
           if(response && response.ok) {
             const token = response.headers.get('authorization');
             AsyncStorage.setItem('farmerToken',token);
-            this.props.navigation.navigate(Auth);
+            this.props.navigation.navigate(MainPage);
             this.setState({loading: false});
           }
         });
