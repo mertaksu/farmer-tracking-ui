@@ -2,7 +2,6 @@ import React, {Component, Fragment} from 'react';
 import {StyleSheet, View, Text, AsyncStorage} from 'react-native';
 import {Body, Button, Container, Content, Header, Icon, Left, List, ListItem, Right, Separator} from "native-base";
 import Loader from "./Loader";
-import Auth from "../../screens/Auth";
 import {service} from "../../services/service";
 
 export default class PreviousJobs extends Component {
@@ -12,6 +11,7 @@ export default class PreviousJobs extends Component {
         this.state = {
             prevPlans: [],
             loading: false,
+            token: '',
         };
         this.signOut = this.signOut.bind(this);
         this.getPrevPlan = this.getPrevPlan.bind(this);
@@ -37,27 +37,24 @@ export default class PreviousJobs extends Component {
 
     render() {
         return (
-            <Fragment>
+            <Container style={styles.container}>
                 <Loader
                     loading={this.state.loading} />
-            <Header hasSegment style={{backgroundColor: '#455a64'}}>
-                <Left>
-                    <Button transparent onPress={() => this.props.navigation.toggleDrawer()}>
-                        <Icon name="menu" />
-                    </Button>
-                </Left>
-                <Body>
+                <Header hasSegment style={{backgroundColor: '#455a64'}}>
+                    <Left>
+                        <Button transparent onPress={() => this.props.navigation.toggleDrawer()}>
+                            <Icon name="menu" />
+                        </Button>
+                    </Left>
+                    <Body>
 
-                </Body>
-                <Right>
-                    <Button transparent onPress={this.signOut}>
-                        <Icon name="md-exit" />
-                    </Button>
-                </Right>
-            </Header>
-                <Fragment>
-                    <Loader
-                        loading={this.state.loading} />
+                    </Body>
+                    <Right>
+                        <Button transparent onPress={this.signOut}>
+                            <Icon name="md-exit" />
+                        </Button>
+                    </Right>
+                </Header>
                     <Content
                         padder
                         style={{backgroundColor: '#455a64'}}>
@@ -93,11 +90,11 @@ export default class PreviousJobs extends Component {
                                                         flexDirection: 'column'
                                                     }}>
                                                     <View style={{flexDirection: 'row'}}>
-                                                        <Text style={styles.titleText}>Arazi:</Text>
+                                                        <Text style={styles.titleText}>Arazi: </Text>
                                                         <Text style={styles.valueText}>{item.landName}</Text>
                                                     </View>
                                                     <View style={{flexDirection: 'row'}}>
-                                                        <Text style={styles.titleText}>İş:</Text>
+                                                        <Text style={styles.titleText}>İş: </Text>
                                                         <Text style={styles.valueText}>{item.planType}</Text>
                                                     </View>
                                                 </View>
@@ -108,11 +105,11 @@ export default class PreviousJobs extends Component {
                                                         flexDirection: 'column'
                                                     }}>
                                                     <View style={{flexDirection: 'row'}}>
-                                                        <Text style={styles.titleText}>Ekin:</Text>
+                                                        <Text style={styles.titleText}>Ekin: </Text>
                                                         <Text style={styles.valueText}>{item.cropName}</Text>
                                                     </View>
                                                     <View style={{flexDirection: 'row'}}>
-                                                        <Text style={styles.titleText}>Tarih:</Text>
+                                                        <Text style={styles.titleText}>Tarih: </Text>
                                                         <Text style={styles.valueText}>{item.planDate}</Text>
                                                     </View>
                                                 </View>
@@ -124,9 +121,7 @@ export default class PreviousJobs extends Component {
                             keyExtractor={(item, index) => index.toString()}
                         />
                     </Content>
-
-                </Fragment>
-                </Fragment>
+                </Container>
         );
     }
 

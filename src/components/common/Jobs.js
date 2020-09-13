@@ -12,10 +12,6 @@ import {
   Left, Fab,
 } from 'native-base';
 import {View, StyleSheet} from 'react-native';
-import {
-  Collapse,
-  CollapseHeader,
-} from 'accordion-collapse-react-native';
 import Loader from "./Loader";
 
 class Jobs extends Component {

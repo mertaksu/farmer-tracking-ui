@@ -1,6 +1,6 @@
 
 //const baseURL = 'http://64.227.113.38:8080';
-const baseURL = 'http://192.168.1.4:8080';
+const baseURL = 'http://192.168.56.1:8080';
 
 export function service(token, path,method, body) {
   return fetch(baseURL + path, {
@@ -11,13 +11,6 @@ export function service(token, path,method, body) {
     },
     body: JSON.stringify(body),
   })
-  /*
-    .then(response => {
-      if (response.headers.get('content-type') != null && response.headers.get('content-type').match(/application\/json/)) {
-        return response.json();
-      }
-      return response;
-    })*/
     .then(checkStatus)
     .then(json => {
       return json;
