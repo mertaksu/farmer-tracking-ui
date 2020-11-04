@@ -96,12 +96,13 @@ export default class MainPage extends Component {
     this.setState({loading: false});
   }
 
-  async addLand(landName,lat,lon) {
+  async addLand(landName,lat,lon,placeName) {
     this.setState({loading: true});
     let request = {
       landName: landName,
       latitude: lat,
-      longitude: lon
+      longitude: lon,
+      placeName: placeName
     };
     await service(this.state.token,'/land', 'POST', request);
     await this.getLand();

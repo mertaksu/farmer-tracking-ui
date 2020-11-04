@@ -5,7 +5,7 @@ import Login from './Login';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import MainPage from './MainPage';
 import PreviousJobs from "../components/common/PreviousJobs";
-import Weather from "./Weather";
+import Weathers from "./Weathers";
 
 const Drawer = createDrawerNavigator();
 
@@ -46,7 +46,7 @@ export default class Auth extends Component {
        <Drawer.Navigator initialRouteName="MainPage">
         <Drawer.Screen name="Ana Sayfa" component={MainPage}/>
         <Drawer.Screen name="Geçmiş Planlı İşler" component={PreviousJobs} />
-        <Drawer.Screen name="Arazilerde Hava Durumu" component={Weather} />
+        <Drawer.Screen name="Arazilerde Hava Durumu" component={Weathers} />
        </Drawer.Navigator>
          /* <MainPage navigation={navigation}/> */
           )

@@ -58,68 +58,70 @@ export default class PreviousJobs extends Component {
                     <Content
                         padder
                         style={{backgroundColor: '#455a64'}}>
-                        <List
-                            dataArray={this.state.prevPlans}
-                            renderRow={item => (
-                                <View style={{backgroundColor: '#455a64'}}>
-                                    <Separator
-                                        style={{
-                                            backgroundColor: '#4c6264',
-                                            flex: 1,
-                                            flexDirection: 'row',
-                                        }}>
-                                        <Left>
-                                            <Text style={{color: '#fff', fontWeight: 'bold'}}>
-                                                Yapılan İş
-                                            </Text>
-                                        </Left>
-                                    </Separator>
-                                    <ListItem
-                                        noIndent
-                                        style={{borderWidth: 0, backgroundColor: '#455a64'}}>
-                                        <Body>
-                                            <View
-                                                style={{
-                                                    flex: 1,
-                                                    flexDirection: 'row'
-                                                }}>
+                        { this.state.prevPlans.length>0 ?
+                            <List
+                                dataArray={this.state.prevPlans}
+                                renderRow={item => (
+                                    <View style={{backgroundColor: '#455a64'}}>
+                                        <Separator
+                                            style={{
+                                                backgroundColor: '#4c6264',
+                                                flex: 1,
+                                                flexDirection: 'row',
+                                            }}>
+                                            <Left>
+                                                <Text style={{color: '#fff', fontWeight: 'bold'}}>
+                                                    Yapılan İş
+                                                </Text>
+                                            </Left>
+                                        </Separator>
+                                        <ListItem
+                                            noIndent
+                                            style={{borderWidth: 0, backgroundColor: '#455a64'}}>
+                                            <Body>
                                                 <View
                                                     style={{
-                                                        width: '50%',
-                                                        flexBasis: '50%',
-                                                        flexDirection: 'column'
+                                                        flex: 1,
+                                                        flexDirection: 'row'
                                                     }}>
-                                                    <View style={{flexDirection: 'row'}}>
-                                                        <Text style={styles.titleText}>Arazi: </Text>
-                                                        <Text style={styles.valueText}>{item.landName}</Text>
+                                                    <View
+                                                        style={{
+                                                            width: '50%',
+                                                            flexBasis: '50%',
+                                                            flexDirection: 'column'
+                                                        }}>
+                                                        <View style={{flexDirection: 'row'}}>
+                                                            <Text style={styles.titleText}>Arazi: </Text>
+                                                            <Text style={styles.valueText}>{item.landName}</Text>
+                                                        </View>
+                                                        <View style={{flexDirection: 'row'}}>
+                                                            <Text style={styles.titleText}>İş: </Text>
+                                                            <Text style={styles.valueText}>{item.planType}</Text>
+                                                        </View>
                                                     </View>
-                                                    <View style={{flexDirection: 'row'}}>
-                                                        <Text style={styles.titleText}>İş: </Text>
-                                                        <Text style={styles.valueText}>{item.planType}</Text>
+                                                    <View
+                                                        style={{
+                                                            width: '50%',
+                                                            flexBasis: '50%',
+                                                            flexDirection: 'column'
+                                                        }}>
+                                                        <View style={{flexDirection: 'row'}}>
+                                                            <Text style={styles.titleText}>Ekin: </Text>
+                                                            <Text style={styles.valueText}>{item.cropName}</Text>
+                                                        </View>
+                                                        <View style={{flexDirection: 'row'}}>
+                                                            <Text style={styles.titleText}>Tarih: </Text>
+                                                            <Text style={styles.valueText}>{item.planDate}</Text>
+                                                        </View>
                                                     </View>
                                                 </View>
-                                                <View
-                                                    style={{
-                                                        width: '50%',
-                                                        flexBasis: '50%',
-                                                        flexDirection: 'column'
-                                                    }}>
-                                                    <View style={{flexDirection: 'row'}}>
-                                                        <Text style={styles.titleText}>Ekin: </Text>
-                                                        <Text style={styles.valueText}>{item.cropName}</Text>
-                                                    </View>
-                                                    <View style={{flexDirection: 'row'}}>
-                                                        <Text style={styles.titleText}>Tarih: </Text>
-                                                        <Text style={styles.valueText}>{item.planDate}</Text>
-                                                    </View>
-                                                </View>
-                                            </View>
-                                        </Body>
-                                    </ListItem>
-                                </View>
-                            )}
-                            keyExtractor={(item, index) => index.toString()}
-                        />
+                                            </Body>
+                                        </ListItem>
+                                    </View>
+                                )}
+                                keyExtractor={(item, index) => index.toString()}
+                            /> : <Text style={{textAlign:'center'}}>Geçmiş planlı işiniz bulunmamaktadır.</Text>
+                        }
                     </Content>
                 </Container>
         );

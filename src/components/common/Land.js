@@ -10,7 +10,8 @@ YellowBox.ignoreWarnings([
 ]);
 
 const API_KEY = 'AIzaSyA5usjKDAhTUkdHFzsM8YawhYXJEY-0cig';
-
+//Example api call for places
+//https://maps.googleapis.com/maps/api/place/autocomplete/json?input=elbeyli&key=AIzaSyA5usjKDAhTUkdHFzsM8YawhYXJEY-0cig&inputtype=textquery&language=tr
 class Land extends Component {
   constructor(props) {
     super(props);
@@ -19,6 +20,7 @@ class Land extends Component {
         placeQuery: '',
         selectedPlaceLat: '',
         selectedPlaceLon: '',
+        selectedPlaceName:'',
         error: '',
     };
     this.deleteLand = this.deleteLand.bind(this);
@@ -29,14 +31,14 @@ class Land extends Component {
     this.props.deleteLand(id);
   }
 
-  async addLand(landName,lat,lon) {
+  async addLand(landName,lat,lon, placeName) {
       if(landName==='')
           this.setState({error:'Arazi adı boş olamaz'});
       else if (lat==='' || lon==='')
           this.setState({error:'Arazi Lokasyonu boş olamaz'});
       else {
-          this.props.addLand(landName,lat,lon);
-          this.setState({landName: '',placeQuery: '',selectedPlaceLat: '',selectedPlaceLon:'',error:''});
+          this.props.addLand(landName,lat,lon, placeName);
+          this.setState({landName: '',placeQuery: '',selectedPlaceLat: '',selectedPlaceLon:'',error:'',placeName:''});
       }
   }
 
@@ -59,7 +61,7 @@ class Land extends Component {
                 noIndent
                 style={{borderWidth: 0, backgroundColor: '#455a64'}}>
                 <Body>
-                  <Text style={{color: '#fff'}}>{item.landName}</Text>
+                  <Text style={{color: '#fff'}}>{item.title}</Text>
                 </Body>
                 <Right>
                   <Button transparent onPress={() => this.deleteLand(item.id)}>
@@ -93,13 +95,13 @@ class Land extends Component {
                     language={'tr'}
                     queryCountries={['tr']}
                     onSelect={place =>  {
-                        this.setState({selectedPlaceLat : place.result.geometry.location.lat, selectedPlaceLon: place.result.geometry.location.lat});
+                        this.setState({selectedPlaceLat : place.result.geometry.location.lat, selectedPlaceLon: place.result.geometry.location.lng, selectedPlaceName:place.result.formatted_address});
                     }}
                 />
             </Item>
             <Button block
                     style={{margin: 10}}
-                    onPress={() => this.addLand(this.state.landName,this.state.selectedPlaceLat,this.state.selectedPlaceLon)}>
+                    onPress={() => this.addLand(this.state.landName,this.state.selectedPlaceLat,this.state.selectedPlaceLon, this.state.selectedPlaceName)}>
                 <Text>Ekle</Text>
             </Button>
             <Text style={styles.errorTextStyle}>

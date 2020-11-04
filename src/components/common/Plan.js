@@ -55,8 +55,8 @@ export default class Plan extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            selectedLand: this.props.route.params.lands ? this.props.route.params.lands[0].id : '',
-            selectedProduct: this.props.route.params.products ? this.props.route.params.products[0].id : '',
+            selectedLand: this.props.route.params.lands.length>0 ? this.props.route.params.lands[0].id : '',
+            selectedProduct: this.props.route.params.products.length>0 ? this.props.route.params.products[0].id : '',
             chosenDate: new Date(),
             markedDates: {},
             gubreRadio: false,

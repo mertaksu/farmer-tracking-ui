@@ -2,12 +2,13 @@
 import React, { Component } from 'react';
 //import react in our code.
 import {StyleSheet, View, Text, AsyncStorage, Image} from 'react-native';
-import {Body, Button, Container, Content, Header, Icon, Left, List, ListItem, Right, Separator} from "native-base";
+import {Body, Button, Container, Content, Header, Icon, Left, List, ListItem, Right, Separator, Tabs} from "native-base";
 import Loader from "../components/common/Loader";
 import Auth from "./Auth";
 import MainPage from "./MainPage";
 import {Logo} from "../components/common/Logo";
 import {service} from "../services/service";
+import MyCarousel from "../components/common/MyCarousel";
 // import all basic components
 
 const img = {
@@ -31,12 +32,12 @@ const img = {
         '50n':require('../images/icons/50n.png'),
     };
 
-export default class Weather extends Component {
+export default class Weathers extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            dailyWeather: [],
+            weather: [],
             token: null,
             loading: false,
             img: []
@@ -47,6 +48,7 @@ export default class Weather extends Component {
     }
 
     componentDidMount() {
+        console.log("Weather Called did mount");
         this.getWeather().then();
         this.state.img = img;
     }
@@ -59,10 +61,20 @@ export default class Weather extends Component {
 
     async getWeather() {
         await this.getToken();
-        service(this.state.token,'/weather/40.47049/29.66282', 'GET')
-            .then(response => this.setState({dailyWeather: response.dailyWeatherList}))
+        service(this.state.token,'/weather', 'GET')
+            .then(response => {
+                this.setState({weather: response})
+            })
             .catch(error => console.log(error));
     }
+
+    focus = this.props.navigation.addListener(
+        'focus',
+        () => {
+            console.log("Weather Called focus");
+            this.getWeather().then();
+        }
+    );
 
 
     render() {
@@ -88,38 +100,7 @@ export default class Weather extends Component {
                 <Content
                     padder
                     style={{backgroundColor: '#455a64'}}>
-                    <List
-                        dataArray={this.state.dailyWeather}
-                        renderRow={item => (
-                            <View style={{backgroundColor: '#455a64'}}>
-                                <Separator
-                                    style={{
-                                        backgroundColor: '#4c6264',
-                                        flex: 1,
-                                        flexDirection: 'row',
-                                    }}>
-                                </Separator>
-                                <ListItem
-                                    noIndent
-                                    style={{borderWidth: 0, backgroundColor: '#455a64'}}>
-                                    <Body>
-                                        <View
-                                            style={{
-                                                flex: 1,
-                                                flexDirection: 'row',
-                                                alignItems: 'center',
-                                            }}>
-                                            <Text style={styles.valueText}>{item.day}</Text>
-                                            <Image source={img[item.icon]}/>
-                                            <Text style={styles.valueText}>{item.centigrade}</Text>
-                                            <Text style={styles.valueText}>{item.desc}</Text>
-                                        </View>
-                                    </Body>
-                                </ListItem>
-                            </View>
-                        )}
-                        keyExtractor={(item, index) => index.toString()}
-                    />
+                    {this.state.weather.length>0 ? <MyCarousel data={this.state.weather}/> : <Text style={{textAlign:'center'}}>Hava durumunu görmek için arazi ekleyin.</Text>}
                 </Content>
             </Container>
         );
