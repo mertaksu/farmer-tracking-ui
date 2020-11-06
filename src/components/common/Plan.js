@@ -156,7 +156,7 @@ export default class Plan extends Component {
                             return (
                                 <Picker.Item
                                     key={v.id}
-                                    label={v.landName}
+                                    label={v.title}
                                     value={v.id}
                                 />
                             );
